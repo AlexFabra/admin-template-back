@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const { response } = require('express');
+//encrypt password library:
+const bcrypt = require('bcryptjs');
 
 const getUsers = async (req, res) => {
 
@@ -13,11 +15,12 @@ const getUsers = async (req, res) => {
 
 const postUser = async (req, res = response) => {
 
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
     
     try {
 
-        const emailRepeated = User.findOne({ email });
+        const emailRepeated = await User.findOne({ email });
+        
         if (emailRepeated) {
             return res.status(400).json({
                 ok: false,
@@ -26,6 +29,11 @@ const postUser = async (req, res = response) => {
         }
 
         const user = new User(req.body);
+
+        //encrypt pwd (1 way hash):
+        const salt = bcrypt.genSaltSync();
+        user.password = bcrypt.hashSync(password,salt);
+        
         await user.save();
 
         res.json({
@@ -35,6 +43,7 @@ const postUser = async (req, res = response) => {
         });
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             ok: false,
             msg: 'error'
@@ -42,6 +51,8 @@ const postUser = async (req, res = response) => {
     }
 
 };
+
+
 
 
 

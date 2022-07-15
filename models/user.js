@@ -29,12 +29,13 @@ const UserSchema = Schema({
     }
 });
 
-//no canvia la bdd; és per mostrar les responses sense v ni id:
+//not to see pwd in responses:
 
-// UserSchema.method('toJSON', function(){
-//     const {__v,_id,...object}=this.toObject();
-//     return object;
-// })
+UserSchema.method('toJSON', function(){
+    const {password,_id,...object}=this.toObject();
+    object.uid=_id;
+    return object;
+})
 
 
 
