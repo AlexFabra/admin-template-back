@@ -7,17 +7,16 @@ const cors = require('cors')
 const app =express();
 //cors:
 app.use(cors());
+
+//read and parse body:
+app.use(express.json());
+
 //initialize db:
 dbConnection();
 
 
 //Routes
-app.get('/',(req,res)=>{
-    res.json({
-        ok:true,
-        msg:'hola'
-    })
-});
+app.use('/api/users',require('./routes/users'));
 
 //listen port:
 app.listen(process.env.PORT,()=>{
