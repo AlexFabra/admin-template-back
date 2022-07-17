@@ -14,7 +14,7 @@ const validateJWT = (req, res, next) => {
     }
 
     try {
-
+        //get decoded uid from token:
         const { uid } = jwt.verify(token, process.env.JWT_SECRET);
         req.uid = uid;
         next();
