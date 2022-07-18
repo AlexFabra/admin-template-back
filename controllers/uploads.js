@@ -4,6 +4,8 @@ const Hospital = require('../models/hospital');
 const Doctor = require('../models/doctor');
 const { v4: uuidv4 } = require('uuid');
 const { updateImg } = require('../helpers/updateImg');
+const path = require('path');
+const fs = require('fs');
 
 const fileUpload = async (req, res = response) => {
 
@@ -53,7 +55,7 @@ const fileUpload = async (req, res = response) => {
             })
         }
         //update db:
-        updateImg(type,id,fileName);
+        updateImg(type, id, fileName);
 
 
         res.json({
@@ -61,9 +63,20 @@ const fileUpload = async (req, res = response) => {
             fileName
         })
     })
-
-
-
 }
+
+const watchFile = (req, res = response) => {
+    const type = req.params.type;
+    const file = req.params.path;
+    let pathImg = path.join(__dirname, `../uploads/${type}/${file}`);
+    if(!fs.existsSync(pathImg)){
+        pathImg = path.join(__dirname,'../uploads/no-img.jpg');
+    }
+    res.sendFile(pathImg);
+}
+
 module.exports =
-    { fileUpload }
+{
+    fileUpload,
+    watchFile
+}

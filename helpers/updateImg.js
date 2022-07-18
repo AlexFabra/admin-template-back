@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const Hospital = require('../models/hospital');
 const Doctor = require('../models/doctor');
-var fs = require('fs');
+const fs = require('fs');
 
 const deleteFile = (path) => {
 
