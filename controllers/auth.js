@@ -3,6 +3,7 @@ const User = require('../models/user');
 //encrypt password library:
 const bcrypt = require('bcryptjs');
 const { generateJWT } = require('../helpers/jwt');
+const { googleVerify } = require('../helpers/google-verify');
 
 const login = async (req, res = response) => {
     const { email, password } = req.body;
@@ -41,6 +42,50 @@ const login = async (req, res = response) => {
     }
 }
 
+const googleLogin= async (req,res=response)=>{
+    try{
+    //const googleUser = await googleVerify(req.body.token);
+    const {email,name,picture} = await googleVerify(req.body.token);
+    const userDb = await User.findOne({email});
+    let user;
+    
+    if(!userDb){
+        user=new User({
+            name,
+            email,
+            password:'@@@',
+            img:picture,
+            google:true
+        })
+    }else {
+        user=userDb;
+        user.google=true;
+    }
+
+
+    await user.save();
+
+     //generate token:
+     const token = await generateJWT(user.id);
+
+    res.json({
+        ok:true,
+        email,
+        name,
+        picture,
+        token
+    });
+
+    }catch(error){
+        res.status(400).json({
+            ok: false,
+            msg: 'error with google token'
+        })
+    }
+    
+}
+
 module.exports = {
-    login
+    login,
+    googleLogin
 }

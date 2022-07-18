@@ -1,7 +1,7 @@
 // path: /api/login
 
 const { Router } = require('express');
-const { login } = require('../controllers/auth');
+const { login, googleLogin } = require('../controllers/auth');
 const { check } = require('express-validator');
 const { validateFields } = require('../middlewares/validate-fields');
 
@@ -15,6 +15,12 @@ router.post('/', [
     login
 )
 
+router.post('/google', [
+    check('token', 'google token required').not().isEmpty(),
+    validateFields
+],
+    googleLogin
+)
 
 
 
