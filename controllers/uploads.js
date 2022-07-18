@@ -3,6 +3,7 @@ const User = require('../models/user');
 const Hospital = require('../models/hospital');
 const Doctor = require('../models/doctor');
 const { v4: uuidv4 } = require('uuid');
+const { updateImg } = require('../helpers/updateImg');
 
 const fileUpload = async (req, res = response) => {
 
@@ -51,6 +52,10 @@ const fileUpload = async (req, res = response) => {
                 msg: 'error'
             })
         }
+        //update db:
+        updateImg(type,id,fileName);
+
+
         res.json({
             ok: true,
             fileName
