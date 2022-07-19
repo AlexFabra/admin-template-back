@@ -9,12 +9,7 @@ const getDoctors = async (req, res = response) => {
         doctors
     })
 }
-const updateDoctor = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'createDoctor'
-    })
-}
+
 const createDoctor = async (req, res = response) => {
     //token validation process adds the uid to request
     const uid = req.uid;
@@ -34,11 +29,74 @@ const createDoctor = async (req, res = response) => {
         })
     }
 }
-const deleteDoctor = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'deleteDoctor'
-    })
+
+const updateDoctor = async (req, res = response) => {
+
+    const id = req.params.id;
+    const uid = req.uid
+
+    try {
+        const doctor = await Doctor.findById(id);
+
+        if (!doctor) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'non-existent ooctor id'
+            });
+        }
+
+        const doctorChanges = {
+            ...req.body,
+            user: uid
+        }
+
+        const updatedDoctor = await Doctor.findByIdAndUpdate(id, doctorChanges, { new: true })
+
+        doctor.name = req.body.name;
+
+        res.json({
+            ok: true,
+            doctor: updatedDoctor
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'error'
+        })
+    }
+
+}
+
+const deleteDoctor = async (req, res = response) => {
+   
+    const id = req.params.id;
+
+    try {
+        const doctor = await Doctor.findById(id);
+
+        if (!doctor) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'non-existent doctor id'
+            });
+        }
+
+        await Doctor.findByIdAndDelete(id)
+
+        doctor.name = req.body.name;
+
+        res.json({
+            ok: true,
+            msg: 'Doctor deleted'
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'error'
+        })
+    }
 }
 module.exports = {
     getDoctors,

@@ -10,21 +10,28 @@ const router = Router();
 
 router.get('/',
     [],
-    getHospitals);
+    getHospitals
+);
 
 router.post('/',
     [
         validateJWT,
-        check('name','hospital name required').not().isEmpty(),
+        check('name', 'hospital name required').not().isEmpty(),
         validateFields
-    ], createHospital);
+    ], createHospital
+);
 
 router.put('/:id',
     [
+        validateJWT,
+        check('name', 'hospital name required').not().isEmpty(),
+        validateFields
+    ], updateHospital
+);
 
-    ], updateHospital)
-
-router.delete('/:id'
-    , deleteHospital)
+router.delete('/:id',
+    validateJWT
+    , deleteHospital
+);
 
 module.exports = router;

@@ -11,8 +11,6 @@ async function googleVerify(token) {
   });
 
   const payload = ticket.getPayload();
-  // If request specified a G Suite domain:
-  // const domain = payload['hd'];
   return payload
 }
 

@@ -2,7 +2,7 @@ const { response } = require('express');
 const Hospital = require('../models/hospital');
 
 const getHospitals = async (req, res = response) => {
-    const hospitals = await Hospital.find().populate('user','name img')
+    const hospitals = await Hospital.find().populate('user', 'name img')
     res.json({
         ok: true,
         hospitals
@@ -30,19 +30,72 @@ const createHospital = async (req, res = response) => {
 
 }
 
+const updateHospital = async (req, res = response) => {
 
+    const id = req.params.id;
+    const uid = req.uid
 
-const updateHospital = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'updateHospital'
-    })
+    try {
+        const hospital = await Hospital.findById(id);
+
+        if (!hospital) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'non-existent hospital id'
+            });
+        }
+
+        const hospitalChanges = {
+            ...req.body,
+            user: uid
+        }
+
+        const updatedHospital = await Hospital.findByIdAndUpdate(id, hospitalChanges, { new: true })
+
+        hospital.name = req.body.name;
+
+        res.json({
+            ok: true,
+            hospital: updatedHospital
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'error'
+        })
+    }
 }
-const deleteHospital = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'deleteHospital'
-    })
+
+const deleteHospital = async (req, res = response) => {
+
+    const id = req.params.id;
+
+    try {
+        const hospital = await Hospital.findById(id);
+
+        if (!hospital) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'non-existent hospital id'
+            });
+        }
+
+        await Hospital.findByIdAndDelete(id)
+
+        hospital.name = req.body.name;
+
+        res.json({
+            ok: true,
+            msg: 'Hospital deleted'
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'error'
+        })
+    }
 }
 module.exports = {
     getHospitals,

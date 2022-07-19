@@ -21,10 +21,12 @@ router.post('/',
 
 router.put('/:id',
     [
-
+        validateJWT,
+        validateFields
     ], updateDoctor)
 
-router.delete('/:id'
+router.delete('/:id',
+    validateJWT
     , deleteDoctor)
 
 module.exports = router;
