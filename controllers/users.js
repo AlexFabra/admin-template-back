@@ -14,7 +14,7 @@ const getUsers = async (req, res) => {
 
     //method to execute simultaneusly multiple promises
     const [users, total] = await Promise.all([
-        User.find({},'name email role google img').skip(indexInit).limit(indexEnd),
+        User.find({}, 'name email role google img').skip(indexInit).limit(indexEnd),
         User.countDocuments()
     ])
 
@@ -92,7 +92,14 @@ const updateUser = async (req, res = response) => {
                 })
             }
         }
-        fields.email = email;
+        if (!userDB.google) {
+            fields.email = email;
+        } else if (userDB.email !== email){
+            return res.status(400).json({
+                ok: false,
+                msg: 'cannot change email registered with google account'
+            })
+        }
 
         const updatedUser = await User.findByIdAndUpdate(uid, fields, { new: true });
 
