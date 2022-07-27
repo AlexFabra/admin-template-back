@@ -20,7 +20,6 @@ router.put(
 
 router.get(
     '/:type/:path',
-    [validateJWT],
     watchFile
 )
 

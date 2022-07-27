@@ -7,10 +7,10 @@ const { generateJWT } = require('../helpers/jwt');
 const getUsers = async (req, res) => {
 
     const indexInit = Number(req.query.indexinit) || 0;
-    const indexEnd = Number(req.query.indexend);
+    const indexEnd = Number(req.query.indexend) || 0;
 
-    // const users = await User.find().skip(indexInit).limit(indexEnd);
-    // const total = await User.count();
+    //  const users = await User.find().skip(indexInit).limit(indexEnd);
+    //  const total = await User.count();
 
     //method to execute simultaneusly multiple promises
     const [users, total] = await Promise.all([
